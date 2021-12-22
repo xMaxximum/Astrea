@@ -21,7 +21,7 @@ namespace BotName
         {
             var discord = new DiscordClient(new DiscordConfiguration()
             {
-                Token = "ODY5Njg2NDk3MjAzMzM1MTk5.YQB0qg.aP0JCYgkYQ_kCIML5RJAJdbjcwI",
+                Token = "ODY5Njg2NDk3MjAzMzM1MTk5.YQB0qg.5mjfUYOro6G2A77dOErJ1DIJqGI",
                 TokenType = TokenType.Bot,
                 Intents = DiscordIntents.All,
                 LogTimestampFormat = "MMM dd yyyy - hh:mm:ss tt",
