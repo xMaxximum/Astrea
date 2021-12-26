@@ -7,6 +7,7 @@ using DisCatSharp;
 using DisCatSharp.ApplicationCommands;
 using DisCatSharp.CommandsNext;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace BotName
 {
@@ -30,7 +31,7 @@ namespace BotName
 
             var commands = discord.UseCommandsNext(new CommandsNextConfiguration()
             {
-                StringPrefixes = new[] { "!" },
+                StringPrefixes = new[] { "," },
                 EnableMentionPrefix = true
             });
 
@@ -41,12 +42,16 @@ namespace BotName
 
             var appCommands = discord.UseApplicationCommands();
 
-            appCommands.RegisterCommands<PingCommand>(869686963828035644);
-
+            discord.GuildCreated += async (s, e) =>
+            {
+                discord.Logger.Log(LogLevel.Information, $"Joined guild '{e.Guild.Name}'");
+                appCommands.RegisterCommands<PingCommand>(e.Guild.Id);
+                await appCommands.RefreshCommandsAsync();
+            };
+            
 
             await discord.ConnectAsync();
             await Task.Delay(-1);
         }
-
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using BotName.SlashCommands.Utility;
 using DisCatSharp;
 using DisCatSharp.CommandsNext;
 using DisCatSharp.CommandsNext.Attributes;
@@ -18,6 +19,7 @@ namespace BotName.Commands
 {
     public class OwnerModule : BaseCommandModule
     {
+        
         [Command("eval")]
         public async Task EvalCommand(CommandContext ctx, [RemainingText] string evalShit)
         {
@@ -105,6 +107,8 @@ namespace BotName.Commands
 
 
 
+
+
         }
 
         public sealed class EvaluationEnvironment
@@ -124,5 +128,6 @@ namespace BotName.Commands
                 this.Context = ctx;
             }
         }
+        
     }
 }
