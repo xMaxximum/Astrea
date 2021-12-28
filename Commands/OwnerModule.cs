@@ -25,7 +25,7 @@ namespace BotName.Commands
         {
             if (evalShit == null)
             {
-                _ = ctx.RespondAsync("i am alive");
+                await ctx.RespondAsync("i am alive");
             }
 
             else

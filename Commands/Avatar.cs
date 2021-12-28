@@ -43,7 +43,7 @@ public class AvatarModule : BaseCommandModule
                     ImageUrl = xd.AvatarUrl
                 };
 
-                _ = ctx.RespondAsync(embed);
+                await ctx.RespondAsync(embed);
 
                 return;
 
@@ -62,7 +62,7 @@ public class AvatarModule : BaseCommandModule
                     ImageUrl = bro.AvatarUrl
                 };
 
-                _ = ctx.RespondAsync(embed);
+                await ctx.RespondAsync(embed);
             }
 
             else
@@ -79,7 +79,7 @@ public class AvatarModule : BaseCommandModule
                     ImageUrl = member.AvatarUrl
                 };
 
-                _ = ctx.RespondAsync(embed);
+                await ctx.RespondAsync(embed);
             }
 
 

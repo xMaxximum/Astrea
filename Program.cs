@@ -1,15 +1,11 @@
-﻿using System;
-using System.Reflection;
-using System.Threading.Tasks;
-using BotName.Commands;
-using BotName.SlashCommands;
-using BotName.SlashCommands.Moderation;
-using BotName.SlashCommands.Utility;
-using DisCatSharp;
+﻿using DisCatSharp;
 using DisCatSharp.ApplicationCommands;
 using DisCatSharp.CommandsNext;
-using Microsoft.Extensions.DependencyInjection;
+using DisCatSharp.EventArgs;
 using Microsoft.Extensions.Logging;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace BotName
 {
@@ -19,6 +15,37 @@ namespace BotName
         {
             MainAsync().GetAwaiter().GetResult();
         }
+
+        #region addSlashCommands
+        private static async Task<Task> Client_GuildDownloadCompleted(DiscordClient sender, GuildDownloadCompletedEventArgs guildDownloadCompletedEventArgs, ApplicationCommandsExtension slash)
+        {
+            _ = Task.Run(async () =>
+            {
+
+
+                sender.Logger.Log(LogLevel.Debug, "Cleaning Global Commands");
+                await slash.CleanGlobalCommandsAsync();
+                sender.Logger.Log(LogLevel.Debug, "Cleaning guild commands");
+                await slash.CleanGuildCommandsAsync();
+                var appCommandModule = typeof(ApplicationCommandsModule);
+                var slashCommands = Assembly.GetExecutingAssembly().GetTypes()
+                    .Where(t => appCommandModule.IsAssignableFrom(t) && !t.IsNested).ToList();
+
+                sender.Logger.Log(LogLevel.Information, $"Guilds: {guildDownloadCompletedEventArgs.Guilds.Count}");
+                foreach (var command in slashCommands)
+                {
+                    foreach (var guildId in guildDownloadCompletedEventArgs.Guilds.Keys)
+                    {
+                        slash.RegisterCommands(command, guildId);
+                    }
+                }
+
+                await slash.RefreshCommandsAsync();
+            });
+            return Task.CompletedTask;
+        }
+        #endregion addSlashCommands
+
 
         static async Task MainAsync()
         {
@@ -45,18 +72,24 @@ namespace BotName
             discord.GuildCreated += async (s, e) =>
             {
                 discord.Logger.Log(LogLevel.Information, $"Joined guild '{e.Guild.Name}'");
-                appCommands.RegisterCommands<PingCommand>(e.Guild.Id);
-                appCommands.RegisterCommands<KickCommand>(e.Guild.Id);
-                appCommands.RegisterCommands<BanCommand>(e.Guild.Id);
-                appCommands.RegisterCommands<UserInfoCommand>(e.Guild.Id);
+
+                var appCommandModule = typeof(ApplicationCommandsModule);
+                var slashCommands = Assembly.GetExecutingAssembly().GetTypes()
+                    .Where(t => appCommandModule.IsAssignableFrom(t) && !t.IsNested).ToList();
+                foreach (var command in slashCommands)
+                {
+                    appCommands.RegisterCommands(command, e.Guild.Id);
+
+                }
                 await appCommands.RefreshCommandsAsync();
             };
 
-            discord.GuildDeleted += async (s, e) => 
+            discord.GuildDeleted += async (s, e) =>
             {
                 discord.Logger.Log(LogLevel.Information, $"Left guild '{e.Guild.Name}'");
             };
-            
+
+            discord.GuildDownloadCompleted += (client, e) => Client_GuildDownloadCompleted(client, e, appCommands);
 
             await discord.ConnectAsync();
             await Task.Delay(-1);
