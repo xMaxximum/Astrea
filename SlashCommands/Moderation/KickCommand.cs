@@ -17,12 +17,12 @@ namespace BotName.SlashCommands
             if (context.Client.GetGuildAsync(context.Guild.Id).Result.GetMemberAsync(context.Client.CurrentUser.Id).Result.Permissions.HasPermission(Permissions.KickMembers)) {
                 if (context.Member.Permissions.HasPermission(Permissions.KickMembers))
                 {
-                    var lol = await context.Guild.GetMemberAsync(user.Id);
+                    var member = await context.Guild.GetMemberAsync(user.Id);
                     var bot = await context.Guild.GetMemberAsync(context.Client.CurrentUser.Id);
 
-                    if (bot.Hierarchy > lol.Hierarchy && context.Member.Hierarchy > lol.Hierarchy)
+                    if (bot.Hierarchy > member.Hierarchy && context.Member.Hierarchy > member.Hierarchy)
                     {
-                        await lol.RemoveAsync(reason);
+                        await member.RemoveAsync(reason);
 
                         await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()
                         {

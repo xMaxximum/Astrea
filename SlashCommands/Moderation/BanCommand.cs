@@ -20,11 +20,11 @@ namespace BotName.SlashCommands.Moderation
                 {
                     if(await user.IsInGuild(context.Guild))
                     {
-                        var lol = await context.Guild.GetMemberAsync(user.Id);
+                        var member = await context.Guild.GetMemberAsync(user.Id);
                         var bot = await context.Guild.GetMemberAsync(context.Client.CurrentUser.Id);
 
 
-                        if (bot.Hierarchy > lol.Hierarchy && context.Member.Hierarchy > lol.Hierarchy)
+                        if (bot.Hierarchy > member.Hierarchy && context.Member.Hierarchy > member.Hierarchy)
                         {
                             await context.Guild.BanMemberAsync((DiscordMember)user, days, reason);
 
@@ -50,8 +50,8 @@ namespace BotName.SlashCommands.Moderation
                     else
                     {
                         Console.WriteLine(context.Interaction.Data.Options.First().Value.ToString());
-                        ulong.TryParse(context.Interaction.Data.Options.First().Value.ToString(), out var lol);
-                        await context.Guild.BanMemberAsync(lol, days, reason);
+                        ulong.TryParse(context.Interaction.Data.Options.First().Value.ToString(), out var memberId);
+                        await context.Guild.BanMemberAsync(memberId, days, reason);
 
                         await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()
                         {
