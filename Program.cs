@@ -2,6 +2,8 @@
 using System.Reflection;
 using System.Threading.Tasks;
 using BotName.Commands;
+using BotName.SlashCommands;
+using BotName.SlashCommands.Moderation;
 using BotName.SlashCommands.Utility;
 using DisCatSharp;
 using DisCatSharp.ApplicationCommands;
@@ -32,12 +34,10 @@ namespace BotName
             var commands = discord.UseCommandsNext(new CommandsNextConfiguration()
             {
                 StringPrefixes = new[] { "," },
-                EnableMentionPrefix = true
+                EnableMentionPrefix = true,
             });
 
             commands.RegisterCommands(Assembly.GetExecutingAssembly());
-
-
 
 
             var appCommands = discord.UseApplicationCommands();
@@ -46,7 +46,14 @@ namespace BotName
             {
                 discord.Logger.Log(LogLevel.Information, $"Joined guild '{e.Guild.Name}'");
                 appCommands.RegisterCommands<PingCommand>(e.Guild.Id);
+                appCommands.RegisterCommands<KickCommand>(e.Guild.Id);
+                appCommands.RegisterCommands<BanCommand>(e.Guild.Id);
                 await appCommands.RefreshCommandsAsync();
+            };
+
+            discord.GuildDeleted += async (s, e) => 
+            {
+                discord.Logger.Log(LogLevel.Information, $"Left guild '{e.Guild.Name}'");
             };
             
 

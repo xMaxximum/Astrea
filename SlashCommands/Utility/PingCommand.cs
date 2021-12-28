@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DisCatSharp;
 using DisCatSharp.ApplicationCommands;
+using DisCatSharp.CommandsNext.Attributes;
 using DisCatSharp.Entities;
 
 namespace BotName.SlashCommands.Utility
@@ -15,7 +16,8 @@ namespace BotName.SlashCommands.Utility
         public async Task Ping(InteractionContext context)
         {
             await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()
-                .AsEphemeral(true).WithContent($"{context.Client.Ping}"));
+                .AsEphemeral(true).WithContent($"{context.Client.Ping}ms"));
         }
+
     }
 }
