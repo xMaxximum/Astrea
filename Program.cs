@@ -48,6 +48,7 @@ namespace BotName
                 appCommands.RegisterCommands<PingCommand>(e.Guild.Id);
                 appCommands.RegisterCommands<KickCommand>(e.Guild.Id);
                 appCommands.RegisterCommands<BanCommand>(e.Guild.Id);
+                appCommands.RegisterCommands<UserInfoCommand>(e.Guild.Id);
                 await appCommands.RefreshCommandsAsync();
             };
 
