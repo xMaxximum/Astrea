@@ -2,9 +2,7 @@
 using DisCatSharp.ApplicationCommands;
 using DisCatSharp.Entities;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BotName.SlashCommands.Moderation
@@ -12,13 +10,13 @@ namespace BotName.SlashCommands.Moderation
     public class BanCommand : ApplicationCommandsModule
     {
         [SlashCommand("ban", "Bans an user")]
-        public async Task Ban(InteractionContext context, [Option("user", "The user to ban")] DiscordUser user, [Option("delete-message-days", "how many messages to delete")] int days = 0, [Option("reason", "The reason for the ban")] string reason = null)
+        public static async Task Ban(InteractionContext context, [Option("user", "The user to ban")] DiscordUser user, [Option("delete-message-days", "how many messages to delete")] int days = 0, [Option("reason", "The reason for the ban")] string reason = null)
         {
             if (context.Client.GetGuildAsync(context.Guild.Id).Result.GetMemberAsync(context.Client.CurrentUser.Id).Result.Permissions.HasPermission(Permissions.BanMembers))
             {
-                if(context.Member.Permissions.HasFlag(Permissions.BanMembers))
+                if (context.Member.Permissions.HasFlag(Permissions.BanMembers))
                 {
-                    if(await user.IsInGuild(context.Guild))
+                    if (await user.IsInGuild(context.Guild))
                     {
                         var member = await context.Guild.GetMemberAsync(user.Id);
                         var bot = await context.Guild.GetMemberAsync(context.Client.CurrentUser.Id);
@@ -35,16 +33,24 @@ namespace BotName.SlashCommands.Moderation
                             });
                         }
 
-                        else
+                        else if (!(bot.Hierarchy > member.Hierarchy))
                         {
                             await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()
                             {
-                                Content = "The bot or you aren't high enough in the role hierarchy to ban this user!",
+                                Content = "The bot isn't high enough in the role hierarchy to ban this user!",
                                 IsEphemeral = true
                             });
                         }
 
-                            
+                        else if (!(context.Member.Hierarchy > member.Hierarchy)) 
+                        {
+                            await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()
+                            {
+                                Content = "You aren't high enough in the role hierarchy to ban this user!",
+                                IsEphemeral = true
+                            });
+                        }
+
                     }
 
                     else

@@ -12,7 +12,7 @@ namespace BotName.SlashCommands.Moderation
     public class UnbanCommand : ApplicationCommandsModule
     {
         [SlashCommand("unban", "Unbans a user")]
-        public async Task Unban(InteractionContext context, [Option("user", "Set the user to unban")] DiscordUser user, [Option("reason", "Provide the reason for the unban")] string reason = null)
+        public static async Task Unban(InteractionContext context, [Option("user", "Set the user to unban")] DiscordUser user, [Option("reason", "Provide the reason for the unban")] string reason = null)
         {
             if (context.Client.GetGuildAsync(context.Guild.Id).Result.GetMemberAsync(context.Client.CurrentUser.Id).Result.Permissions.HasPermission(Permissions.BanMembers))
             {

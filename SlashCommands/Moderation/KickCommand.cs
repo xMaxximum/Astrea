@@ -12,7 +12,7 @@ namespace BotName.SlashCommands
     public class KickCommand : ApplicationCommandsModule
     {
         [SlashCommand("kick", "Kicks an user")]
-        public async Task Kick(InteractionContext context, [Option("user", "The user to kick")] DiscordUser user, [Option("reason", "Provide the reason for the kick")] string reason = null)
+        public static async Task Kick(InteractionContext context, [Option("user", "The user to kick")] DiscordUser user, [Option("reason", "Provide the reason for the kick")] string reason = null)
         {
             if (context.Client.GetGuildAsync(context.Guild.Id).Result.GetMemberAsync(context.Client.CurrentUser.Id).Result.Permissions.HasPermission(Permissions.KickMembers)) {
                 if (context.Member.Permissions.HasPermission(Permissions.KickMembers))

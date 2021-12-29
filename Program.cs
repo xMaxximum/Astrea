@@ -1,4 +1,5 @@
-﻿using DisCatSharp;
+﻿using BotName.SlashCommands.Utility;
+using DisCatSharp;
 using DisCatSharp.ApplicationCommands;
 using DisCatSharp.CommandsNext;
 using DisCatSharp.EventArgs;
@@ -55,8 +56,9 @@ namespace BotName
                 TokenType = TokenType.Bot,
                 Intents = DiscordIntents.All,
                 LogTimestampFormat = "MMM dd yyyy - hh:mm:ss tt",
-                MinimumLogLevel = Microsoft.Extensions.Logging.LogLevel.Information
+                MinimumLogLevel = LogLevel.Information
             });
+
 
             var commands = discord.UseCommandsNext(new CommandsNextConfiguration()
             {
