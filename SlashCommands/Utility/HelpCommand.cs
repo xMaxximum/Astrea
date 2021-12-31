@@ -29,13 +29,11 @@ namespace BotName.SlashCommands.Utility
                     Title = "Commands",
                     Description = "Commands of the Bot"
                 }.AddField("Commands", string.Join(", ", slashCommands.Select(x => x.Name.ToLower().Replace("command", string.Empty)))));
-
                 await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, response);
             }
 
             else
-            {
-
+            { 
             }
 
 
