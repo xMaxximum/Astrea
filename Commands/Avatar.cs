@@ -18,7 +18,7 @@ public class AvatarModule : BaseCommandModule
                 ImageUrl = ctx.Member.AvatarUrl
             };
 
-            _ = ctx.RespondAsync(embed);
+            await ctx.RespondAsync(embed);
         }
 
         else
