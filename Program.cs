@@ -93,6 +93,14 @@ namespace BotName
 
             discord.GuildDownloadCompleted += (client, e) => Client_GuildDownloadCompleted(client, e, appCommands);
 
+            discord.MessageCreated += async (client, e) =>
+            {
+                if ((bool)(e.Message?.MentionedUsers.Contains(client.CurrentUser)))
+                {
+                    await client.SendMessageAsync(e.Channel, "Im alive");
+                }
+            };
+
             await discord.ConnectAsync();
             await Task.Delay(-1);
         }

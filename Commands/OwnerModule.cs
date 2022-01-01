@@ -21,7 +21,7 @@ namespace BotName.Commands
     {
 
         [Command("eval"), Aliases(new string[] {"ev"}), RequireOwner]
-        public async Task EvalCommand(CommandContext ctx, [RemainingText] string evalShit = null)
+        public static async Task EvalCommand(CommandContext ctx, [RemainingText] string evalShit = null)
         {
             if (evalShit == null)
             {

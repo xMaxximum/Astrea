@@ -11,6 +11,7 @@
     <PackageReference Include="DisCatSharp.CommandsNext" Version="9.8.5-nightly-00246" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.1.0-1.final" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="6.0.0" />
   </ItemGroup>
 
 </Project>
