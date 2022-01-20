@@ -6,12 +6,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DisCatSharp" Version="9.8.5-nightly-00246" />
-    <PackageReference Include="DisCatSharp.ApplicationCommands" Version="9.8.5-nightly-00246" />
-    <PackageReference Include="DisCatSharp.CommandsNext" Version="9.8.5-nightly-00246" />
+    <None Remove="database.db" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="database.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.123" />
+    <PackageReference Include="DisCatSharp.ApplicationCommands" Version="9.8.7-nightly-00276" />
+    <PackageReference Include="DisCatSharp.CommandsNext" Version="9.8.7-nightly-00276" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.1.0-1.final" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="6.0.0" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.115.5" />
+    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="6.0.2-mauipre.1.22054.8" />
   </ItemGroup>
 
 </Project>

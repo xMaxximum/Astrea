@@ -55,7 +55,6 @@ namespace BotName.SlashCommands.Moderation
 
                     else
                     {
-                        Console.WriteLine(context.Interaction.Data.Options.First().Value.ToString());
                         ulong.TryParse(context.Interaction.Data.Options.First().Value.ToString(), out var memberId);
                         await context.Guild.BanMemberAsync(memberId, days, reason);
 

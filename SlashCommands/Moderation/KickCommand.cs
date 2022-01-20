@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BotName.SlashCommands
+namespace BotName.SlashCommands.Moderation
 {
     public class KickCommand : ApplicationCommandsModule
     {

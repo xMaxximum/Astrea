@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using BotName.SlashCommands.Utility;
-using DisCatSharp;
+﻿using DisCatSharp;
 using DisCatSharp.CommandsNext;
 using DisCatSharp.CommandsNext.Attributes;
 using DisCatSharp.Entities;
@@ -14,14 +6,18 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace BotName.Commands
 {
     public class OwnerModule : BaseCommandModule
     {
-
-        [Command("eval"), Aliases(new string[] {"ev"}), RequireOwner]
-        public static async Task EvalCommand(CommandContext ctx, [RemainingText] string evalShit = null)
+        [Command("eval"), Aliases(new string[] { "ev" }), Description("evaluates something"), RequireOwner]
+        public async Task EvalCommand(CommandContext ctx, [RemainingText] string evalShit = null)
         {
             if (evalShit == null)
             {
@@ -135,6 +131,6 @@ namespace BotName.Commands
                 this.Context = ctx;
             }
         }
-        
+
     }
 }
