@@ -2,7 +2,9 @@
 using DisCatSharp.ApplicationCommands;
 using DisCatSharp.CommandsNext;
 using DisCatSharp.EventArgs;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Configuration;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -48,18 +50,20 @@ namespace BotName
         {
             var discord = new DiscordClient(new DiscordConfiguration()
             {
-                Token = "ODY5Njg2NDk3MjAzMzM1MTk5.YQB0qg.5mjfUYOro6G2A77dOErJ1DIJqGI",
+                Token = ConfigurationManager.ConnectionStrings["Token"].ConnectionString,
                 TokenType = TokenType.Bot,
                 Intents = DiscordIntents.All,
                 LogTimestampFormat = "MMM dd yyyy - hh:mm:ss tt",
                 MinimumLogLevel = LogLevel.Information
             });
 
+            var services = new ServiceCollection().BuildServiceProvider();
 
             var commands = discord.UseCommandsNext(new CommandsNextConfiguration()
             {
                 StringPrefixes = new[] { "," },
                 EnableMentionPrefix = true,
+                ServiceProvider = services
             });
 
             commands.RegisterCommands(Assembly.GetExecutingAssembly());

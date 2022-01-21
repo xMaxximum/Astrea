@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 namespace BotName.Commands
 {
-    public class AvatarModule : BaseCommandModule
+    public class UtilityModule : BaseCommandModule
     {
         [Command("avatar"), Aliases(new string[] { "av" }), Description("gets a user's avatar"), IsBannedCheck]
         public async Task AvatarCommand(CommandContext ctx, DiscordMember member = null)
