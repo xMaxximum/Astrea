@@ -7,11 +7,21 @@
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.123" />
-    <PackageReference Include="DisCatSharp.ApplicationCommands" Version="9.8.7-nightly-00276" />
-    <PackageReference Include="DisCatSharp.CommandsNext" Version="9.8.7-nightly-00276" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.1.0-1.final" />
+    <PackageReference Include="DisCatSharp.ApplicationCommands" Version="9.8.7-nightly-00282" />
+    <PackageReference Include="DisCatSharp.CommandsNext" Version="9.8.7-nightly-00282" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.1.0-3.final" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.115.5" />
     <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="6.0.2-mauipre.1.22054.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BotApi\BotApi.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="database.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

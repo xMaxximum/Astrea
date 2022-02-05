@@ -1,6 +1,5 @@
 ﻿using BotName.Database.Models;
 using Dapper;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SQLite;
@@ -11,20 +10,12 @@ namespace BotName.Database
 {
     public class Database
     {
-        public static async Task<List<BlacklistModel>> LoadBlacklistsAsync()
-        {
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
-            {
-                var output = await cnn.QueryAsync<BlacklistModel>("select * from blacklist", new DynamicParameters());
-                return output.ToList();
-            }
-        }
 
         public static async Task<bool> BlacklistContains(ulong userId)
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                var output = await cnn.QueryAsync("select Id from blacklist where blacklist.Id = @USERID", new { USERID = userId });
+                var output = await cnn.QueryAsync<BlacklistModel>($"select id from blacklist where id = {userId}");
 
                 if (output.ToList().Any())
                 {

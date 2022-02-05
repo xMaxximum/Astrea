@@ -15,6 +15,7 @@ namespace BotName
     {
         static void Main(string[] args)
         {
+            System.IO.Directory.CreateDirectory("temp");
             MainAsync().GetAwaiter().GetResult();
         }
 

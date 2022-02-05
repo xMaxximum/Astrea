@@ -1,7 +1,9 @@
+using BotApi;
 using DisCatSharp.CommandsNext;
 using DisCatSharp.CommandsNext.Attributes;
 using DisCatSharp.Entities;
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 namespace BotName.Commands
@@ -21,6 +23,16 @@ namespace BotName.Commands
                 };
 
                 await ctx.RespondAsync(embed);
+
+                /*
+                var file = await Profile.CreateProfile(ctx.Member.GetAvatarUrl(DisCatSharp.ImageFormat.Png));
+
+                using (var fs = new FileStream(file, FileMode.Open, FileAccess.Read))
+                {
+                    var builder = new DiscordMessageBuilder().WithContent("Heres you file").WithFile(fs);
+                    await ctx.Channel.SendMessageAsync(builder);
+                }
+                */
             }
 
             else
