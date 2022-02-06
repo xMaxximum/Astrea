@@ -1,9 +1,7 @@
-using BotApi;
 using DisCatSharp.CommandsNext;
 using DisCatSharp.CommandsNext.Attributes;
 using DisCatSharp.Entities;
 using System;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 namespace BotName.Commands
@@ -21,6 +19,7 @@ namespace BotName.Commands
                     Color = ctx.Member.Color,
                     ImageUrl = ctx.Member.AvatarUrl
                 };
+
 
                 await ctx.RespondAsync(embed);
 
@@ -95,10 +94,6 @@ namespace BotName.Commands
 
                     await ctx.RespondAsync(embed);
                 }
-
-
-
-
             }
         }
     }
