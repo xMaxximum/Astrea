@@ -10,5 +10,10 @@
         public ulong UserId { get; set; }
         public string Description { get; set; }
         public int State { get; set; } = 0;
+
+        public override string ToString()
+        {
+            return $"Id: {Id}, GuildId:{GuildId}, GuildSugId:{GuildSuggestionId}, ChannelId:{ChannelId}, MessageId:{MessageId}, {UserId}, {Description}, {State}"; 
+        }
     }
 }

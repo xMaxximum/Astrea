@@ -74,7 +74,7 @@ namespace BotName.Database
             {
                 using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
                 {
-                    await cnn.QueryAsync<SuggestionModel>("insert into suggestions (guildId, guildSuggestionId, channelId, messageId, userId, title, description, state) values (@guildId, @guildSuggestionId, @channelId, @messageId, @userId, @title, @description, @state)", suggestion);
+                    await cnn.QueryAsync<SuggestionModel>("insert into suggestions (guildId, guildSuggestionId, channelId, messageId, userId, description, state) values (@guildId, @guildSuggestionId, @channelId, @messageId, @userId, @description, @state)", suggestion);
 
                 }
             }
@@ -86,14 +86,13 @@ namespace BotName.Database
             }
         }
 
-        public static async Task EditSuggestionAsync(SuggestionModel suggestion, int id, ulong userId, ulong guildId)
+        public static async Task EditSuggestionAsync(string description, int id, ulong userId, ulong guildId)
         {
             try
             {
                 using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
                 {
-                    var test = await cnn.QueryAsync<SuggestionModel>($"update suggestions set description = @Description where guildId = {guildId}, userId = {userId}, guildSuggestionId = {id}", suggestion);
-                    Console.WriteLine(test.ToString());
+                    await cnn.QueryAsync<SuggestionModel>($"update suggestions set description = @Description where guildId = {guildId} and userId = {userId} and guildSuggestionId = {id}", new { Description = description });
                 }
             }
 
@@ -101,6 +100,36 @@ namespace BotName.Database
             {
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
+            }
+        }
+
+        public static async Task<bool> IsSuggestionOwner(int guildSuggestionId, ulong userId)
+        {
+            try
+            {
+                using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+                {
+                    var suggestion = await cnn.QueryFirstOrDefaultAsync<string>("select 1 from suggestions where guildSuggestionId = @guildsuggestionid and userId = @userid",
+                        new { guildsuggestionid = guildSuggestionId, userid = userId });
+
+                    if (suggestion == "1")
+                    {
+                        return true;
+                    }
+
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+
+                return false;
             }
         }
 
@@ -120,6 +149,27 @@ namespace BotName.Database
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
                 return 0;
+            }
+        }
+
+        public static async Task<SuggestionModel> GetSuggestionMsgOfGuildAsync(ulong guildId, int guildSuggestionId)
+        {
+            try
+            {
+                using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+                {
+                    var message = await cnn.QueryFirstAsync<SuggestionModel>("select messageId, channelId from suggestions where guildId = @guildid and guildSuggestionId = @guildsuggestionid",
+                        new { guildid = guildId, guildsuggestionid = guildSuggestionId });
+
+                    return message;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                return new SuggestionModel();
             }
         }
         #endregion Suggestions
