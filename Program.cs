@@ -49,7 +49,7 @@ namespace BotName
 
         static async Task MainAsync()
         {
-            var discord = new DiscordClient(new DiscordConfiguration()
+            var discord = new DiscordShardedClient(new DiscordConfiguration()
             {
                 Token = ConfigurationManager.ConnectionStrings["Token"].ConnectionString,
                 TokenType = TokenType.Bot,
@@ -60,17 +60,17 @@ namespace BotName
 
             var services = new ServiceCollection().BuildServiceProvider();
 
-            var commands = discord.UseCommandsNext(new CommandsNextConfiguration()
+            var commands = discord.UseCommandsNextAsync(new CommandsNextConfiguration()
             {
                 StringPrefixes = new[] { "," },
                 EnableMentionPrefix = true,
                 ServiceProvider = services
             });
 
-            commands.RegisterCommands(Assembly.GetExecutingAssembly());
+            commands.Result.RegisterCommands(Assembly.GetExecutingAssembly());
 
 
-            var appCommands = discord.UseApplicationCommands();
+            var appCommands = discord.UseApplicationCommandsAsync();
 
             discord.GuildCreated += async (s, e) =>
             {
@@ -93,10 +93,11 @@ namespace BotName
                 return Task.CompletedTask;
             };
 
+
             discord.GuildDownloadCompleted += (client, e) => Client_GuildDownloadCompleted(client, e);
 
 
-            await discord.ConnectAsync();
+            await discord.StartAsync();
             await Task.Delay(-1);
         }
     }

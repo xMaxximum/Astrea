@@ -12,107 +12,16 @@ namespace BotName.Database
     public class Database
     {
         #region Blacklist
-        public static async Task<bool> BlacklistContains(ulong userId)
+
+        public class Blacklists
         {
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
-            {
-                var output = await cnn.QueryAsync<BlacklistModel>($"select id from blacklist where id = {userId}");
-
-                if (output.ToList().Any())
-                {
-                    return true;
-                }
-
-                else
-                {
-                    return false;
-                }
-            }
-            #region oldCode
-            /*
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
-            {
-               
-                var sql = "SELECT Id FROM blacklist WHERE blacklist.Id = @userId";
-
-                cnn.Open();
-
-
-                using var cmd = new SQLiteCommand(sql, (SQLiteConnection)cnn);
-                cmd.Parameters.AddWithValue("@userId", userId);
-                await cmd.PrepareAsync();
-                using var rdr = cmd.ExecuteReader();
-
-                if (rdr.HasRows)
-                {
-                    cnn.Close();
-                    return true;
-                }
-
-                else
-                {
-                    cnn.Close();
-                    return false;
-                }
-                */
-            #endregion oldCode
-        }
-
-        public static async Task AddBlacklistAsync(BlacklistModel user)
-        {
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
-            {
-                await cnn.QueryAsync("insert into blacklist (Id, Reason) values (@Id, @Reason)", user);
-            }
-        }
-        #endregion Blacklist
-
-        #region Suggestions
-        public static async Task AddSuggestionAsync(SuggestionModel suggestion)
-        {
-            try
+            public static async Task<bool> BlacklistContains(ulong userId)
             {
                 using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
                 {
-                    await cnn.QueryAsync<SuggestionModel>("insert into suggestions (guildId, guildSuggestionId, channelId, messageId, userId, description, state) values (@guildId, @guildSuggestionId, @channelId, @messageId, @userId, @description, @state)", suggestion);
+                    var output = await cnn.QueryAsync<BlacklistModel>($"select id from blacklist where id = {userId}");
 
-                }
-            }
-
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-            }
-        }
-
-        public static async Task EditSuggestionAsync(string description, int id, ulong userId, ulong guildId)
-        {
-            try
-            {
-                using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
-                {
-                    await cnn.QueryAsync<SuggestionModel>($"update suggestions set description = @Description where guildId = {guildId} and userId = {userId} and guildSuggestionId = {id}", new { Description = description });
-                }
-            }
-
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-            }
-        }
-
-        public static async Task<bool> IsSuggestionOwner(int guildSuggestionId, ulong userId)
-        {
-            try
-            {
-                using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
-                {
-                    var suggestion = await cnn.QueryFirstOrDefaultAsync<string>("select 1 from suggestions where guildSuggestionId = @guildsuggestionid and userId = @userid",
-                        new { guildsuggestionid = guildSuggestionId, userid = userId });
-
-                    if (suggestion == "1")
+                    if (output.ToList().Any())
                     {
                         return true;
                     }
@@ -122,54 +31,166 @@ namespace BotName.Database
                         return false;
                     }
                 }
+                #region oldCode
+                /*
+                using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+                {
+
+                    var sql = "SELECT Id FROM blacklist WHERE blacklist.Id = @userId";
+
+                    cnn.Open();
+
+
+                    using var cmd = new SQLiteCommand(sql, (SQLiteConnection)cnn);
+                    cmd.Parameters.AddWithValue("@userId", userId);
+                    await cmd.PrepareAsync();
+                    using var rdr = cmd.ExecuteReader();
+
+                    if (rdr.HasRows)
+                    {
+                        cnn.Close();
+                        return true;
+                    }
+
+                    else
+                    {
+                        cnn.Close();
+                        return false;
+                    }
+                    */
+                #endregion oldCode
             }
 
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-
-                return false;
-            }
-        }
-
-        public static async Task<int> GetGuildSuggestionsAsync(ulong guildId)
-        {
-            try
+            public static async Task AddBlacklistAsync(BlacklistModel user)
             {
                 using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
                 {
-                    int guildSuggestionCount = await cnn.QueryFirstOrDefaultAsync<int>($"select count(guildSuggestionId) from suggestions where guildId = {guildId}");
-
-                    return guildSuggestionCount + 1;
+                    await cnn.QueryAsync("insert into blacklist (Id, Reason) values (@Id, @Reason)", user);
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-                return 0;
             }
         }
+        #endregion Blacklist
 
-        public static async Task<SuggestionModel> GetSuggestionMsgOfGuildAsync(ulong guildId, int guildSuggestionId)
+
+        #region Suggestions
+        public class Suggestions
         {
-            try
+            public static async Task AddSuggestionAsync(SuggestionModel suggestion)
             {
-                using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+                try
                 {
-                    var message = await cnn.QueryFirstAsync<SuggestionModel>("select messageId, channelId from suggestions where guildId = @guildid and guildSuggestionId = @guildsuggestionid",
-                        new { guildid = guildId, guildsuggestionid = guildSuggestionId });
+                    using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+                    {
+                        await cnn.QueryAsync<SuggestionModel>("insert into suggestions (guildId, guildSuggestionId, channelId, messageId, userId, description, state) values (@guildId, @guildSuggestionId, @channelId, @messageId, @userId, @description, @state)", suggestion);
 
-                    return message;
+                    }
+                }
+
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
                 }
             }
 
-            catch (Exception ex)
+            public static async Task EditSuggestionAsync(string description, int id, ulong userId, ulong guildId)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-                return new SuggestionModel();
+                try
+                {
+                    using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+                    {
+                        await cnn.QueryAsync<SuggestionModel>($"update suggestions set description = @Description where guildId = {guildId} and userId = {userId} and guildSuggestionId = {id}", new { Description = description });
+                    }
+                }
+
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
+                }
+            }
+
+            public static async Task EditSuggestionState(ulong guildId, int suggestionId, int state)
+            {
+                try
+                {
+                    using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+                    {
+                        await cnn.QueryAsync($"update suggestions set state = @state where guildId = {guildId} and guildSuggestionId = {suggestionId}", new { state });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
+                }
+            }
+
+            public static async Task<bool> IsSuggestionOwner(int guildSuggestionId, ulong userId)
+            {
+                try
+                {
+                    using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+                    {
+                        var suggestion = await cnn.QueryFirstOrDefaultAsync<string>("select 1 from suggestions where guildSuggestionId = @guildsuggestionid and userId = @userid",
+                            new { guildsuggestionid = guildSuggestionId, userid = userId });
+
+                        if (suggestion == "1")
+                        {
+                            return true;
+                        }
+
+                        else return false;
+                    }
+                }
+
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
+
+                    return false;
+                }
+            }
+
+            public static async Task<int> GetGuildSuggestionsAsync(ulong guildId)
+            {
+                try
+                {
+                    using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+                    {
+                        int guildSuggestionCount = await cnn.QueryFirstOrDefaultAsync<int>($"select count(guildSuggestionId) from suggestions where guildId = {guildId}");
+
+                        return guildSuggestionCount + 1;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
+                    return 0;
+                }
+            }
+
+            public static async Task<SuggestionModel> GetSuggestionMsgOfGuildAsync(ulong guildId, int guildSuggestionId)
+            {
+                try
+                {
+                    using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+                    {
+                        var message = await cnn.QueryFirstAsync<SuggestionModel>("select messageId, channelId, state, description from suggestions where guildId = @guildid and guildSuggestionId = @guildsuggestionid",
+                            new { guildid = guildId, guildsuggestionid = guildSuggestionId });
+
+                        return message;
+                    }
+                }
+
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
+                    return new SuggestionModel();
+                }
             }
         }
         #endregion Suggestions

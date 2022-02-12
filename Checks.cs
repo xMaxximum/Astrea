@@ -8,7 +8,7 @@ namespace BotName
     {
         public override async Task<bool> ExecuteCheckAsync(CommandContext context, bool help)
         {
-            if (await Database.Database.BlacklistContains(context.Member.Id))
+            if (await Database.Database.Blacklists.BlacklistContains(context.Member.Id))
             {
                 return false;
             }
