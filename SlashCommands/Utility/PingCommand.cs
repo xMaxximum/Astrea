@@ -8,7 +8,7 @@ namespace BotName.SlashCommands.Utility
 {
     public class PingCommand : ApplicationCommandsModule
     {
-        [SlashCommand("ping", "Returns latency")]
+        [SlashCommand("ping", "Returns latency"), BannedCheck]
         public static async Task Ping(InteractionContext context)
         {
             await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()

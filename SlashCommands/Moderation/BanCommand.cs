@@ -9,7 +9,7 @@ namespace BotName.SlashCommands.Moderation
 {
     public class BanCommand : ApplicationCommandsModule
     {
-        [SlashCommand("ban", "Bans an user")]
+        [SlashCommand("ban", "Bans an user"), BannedCheck]
         public static async Task Ban(InteractionContext context, [Option("user", "The user to ban")] DiscordUser user, [Option("delete-message-days", "how many messages to delete")] int days = 0, [Option("reason", "The reason for the ban")] string reason = null)
         {
             if (context.Client.GetGuildAsync(context.Guild.Id).Result.GetMemberAsync(context.Client.CurrentUser.Id).Result.Permissions.HasPermission(Permissions.BanMembers))

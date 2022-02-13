@@ -8,7 +8,7 @@ namespace BotName.SlashCommands.Utility
 {
     public class UserInfoCommand : ApplicationCommandsModule
     {
-        [SlashCommand("userinfo", "Views a user's info")]
+        [SlashCommand("userinfo", "Views a user's info"), BannedCheck]
         public static async Task UserInfo(InteractionContext context, [Option("user", "The users info you're looking for")] DiscordUser user = null, [Option("hidden", "do you want an ephmeral output?")] bool hidden = false)
         {
             if (user == null)

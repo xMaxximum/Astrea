@@ -11,7 +11,7 @@ namespace BotName.SlashCommands.Moderation
 {
     public class MuteCommand : ApplicationCommandsModule
     {
-        [SlashCommand("mute", "Times out a user for a given duration")]
+        [SlashCommand("mute", "Times out a user for a given duration"), BannedCheck]
         public static async Task Mute(InteractionContext context, [Option("user", "The user to mute")] DiscordUser user, [Option("duration", "Sets the duration of the mute (10s,5m,1d-28d)")] string duration = "5m", [Option("reason", "The reason for the mute")] string reason = null)
         {
             if(context.Client.GetGuildAsync(context.Guild.Id).Result.GetMemberAsync(context.Client.CurrentUser.Id).Result.Permissions.HasFlag(Permissions.ManageMessages))

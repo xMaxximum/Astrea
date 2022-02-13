@@ -6,6 +6,7 @@ using System.Data;
 using System.Data.SQLite;
 using System.Linq;
 using System.Threading.Tasks;
+using static BotName.Database.Models.LoggingModel;
 
 namespace BotName.Database
 {
@@ -17,56 +18,22 @@ namespace BotName.Database
         {
             public static async Task<bool> BlacklistContains(ulong userId)
             {
-                using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+                using IDbConnection cnn = new SQLiteConnection(LoadConnectionString());
+                var output = await cnn.QueryAsync<BlacklistModel>($"select id from blacklist where id = {userId}");
+                if (output.ToList().Any())
                 {
-                    var output = await cnn.QueryAsync<BlacklistModel>($"select id from blacklist where id = {userId}");
-
-                    if (output.ToList().Any())
-                    {
-                        return true;
-                    }
-
-                    else
-                    {
-                        return false;
-                    }
+                    return true;
                 }
-                #region oldCode
-                /*
-                using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+                else
                 {
-
-                    var sql = "SELECT Id FROM blacklist WHERE blacklist.Id = @userId";
-
-                    cnn.Open();
-
-
-                    using var cmd = new SQLiteCommand(sql, (SQLiteConnection)cnn);
-                    cmd.Parameters.AddWithValue("@userId", userId);
-                    await cmd.PrepareAsync();
-                    using var rdr = cmd.ExecuteReader();
-
-                    if (rdr.HasRows)
-                    {
-                        cnn.Close();
-                        return true;
-                    }
-
-                    else
-                    {
-                        cnn.Close();
-                        return false;
-                    }
-                    */
-                #endregion oldCode
+                    return false;
+                }
             }
 
             public static async Task AddBlacklistAsync(BlacklistModel user)
             {
-                using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
-                {
-                    await cnn.QueryAsync("insert into blacklist (Id, Reason) values (@Id, @Reason)", user);
-                }
+                using IDbConnection cnn = new SQLiteConnection(LoadConnectionString());
+                await cnn.QueryAsync("insert into blacklist (Id, Reason) values (@Id, @Reason)", user);
             }
         }
         #endregion Blacklist
@@ -79,11 +46,8 @@ namespace BotName.Database
             {
                 try
                 {
-                    using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
-                    {
-                        await cnn.QueryAsync<SuggestionModel>("insert into suggestions (guildId, guildSuggestionId, channelId, messageId, userId, description, state) values (@guildId, @guildSuggestionId, @channelId, @messageId, @userId, @description, @state)", suggestion);
-
-                    }
+                    using IDbConnection cnn = new SQLiteConnection(LoadConnectionString());
+                    await cnn.QueryAsync<SuggestionModel>("insert into suggestions (guildId, guildSuggestionId, channelId, messageId, userId, description, state) values (@guildId, @guildSuggestionId, @channelId, @messageId, @userId, @description, @state)", suggestion);
                 }
 
                 catch (Exception ex)
@@ -97,10 +61,11 @@ namespace BotName.Database
             {
                 try
                 {
-                    using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+                    using IDbConnection cnn = new SQLiteConnection(LoadConnectionString());
+                    await cnn.QueryAsync<SuggestionModel>($"update suggestions set description = @Description where guildId = {guildId} and userId = {userId} and guildSuggestionId = {id}", new
                     {
-                        await cnn.QueryAsync<SuggestionModel>($"update suggestions set description = @Description where guildId = {guildId} and userId = {userId} and guildSuggestionId = {id}", new { Description = description });
-                    }
+                        Description = description
+                    });
                 }
 
                 catch (Exception ex)
@@ -114,10 +79,8 @@ namespace BotName.Database
             {
                 try
                 {
-                    using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
-                    {
-                        await cnn.QueryAsync($"update suggestions set state = @state where guildId = {guildId} and guildSuggestionId = {suggestionId}", new { state });
-                    }
+                    using IDbConnection cnn = new SQLiteConnection(LoadConnectionString());
+                    await cnn.QueryAsync($"update suggestions set state = @state where guildId = {guildId} and guildSuggestionId = {suggestionId}", new { state });
                 }
                 catch (Exception ex)
                 {
@@ -130,18 +93,18 @@ namespace BotName.Database
             {
                 try
                 {
-                    using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+                    using IDbConnection cnn = new SQLiteConnection(LoadConnectionString());
+                    var suggestion = await cnn.QueryFirstOrDefaultAsync<string>("select 1 from suggestions where guildSuggestionId = @guildsuggestionid and userId = @userid", new
                     {
-                        var suggestion = await cnn.QueryFirstOrDefaultAsync<string>("select 1 from suggestions where guildSuggestionId = @guildsuggestionid and userId = @userid",
-                            new { guildsuggestionid = guildSuggestionId, userid = userId });
-
-                        if (suggestion == "1")
-                        {
-                            return true;
-                        }
-
-                        else return false;
+                        guildsuggestionid = guildSuggestionId,
+                        userid = userId
+                    });
+                    if (suggestion == "1")
+                    {
+                        return true;
                     }
+                    else
+                        return false;
                 }
 
                 catch (Exception ex)
@@ -157,12 +120,10 @@ namespace BotName.Database
             {
                 try
                 {
-                    using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
-                    {
-                        int guildSuggestionCount = await cnn.QueryFirstOrDefaultAsync<int>($"select count(guildSuggestionId) from suggestions where guildId = {guildId}");
+                    using IDbConnection cnn = new SQLiteConnection(LoadConnectionString());
+                    int guildSuggestionCount = await cnn.QueryFirstOrDefaultAsync<int>($"select count(guildSuggestionId) from suggestions where guildId = {guildId}");
 
-                        return guildSuggestionCount + 1;
-                    }
+                    return guildSuggestionCount + 1;
                 }
                 catch (Exception ex)
                 {
@@ -176,13 +137,11 @@ namespace BotName.Database
             {
                 try
                 {
-                    using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
-                    {
-                        var message = await cnn.QueryFirstAsync<SuggestionModel>("select messageId, channelId, state, description from suggestions where guildId = @guildid and guildSuggestionId = @guildsuggestionid",
-                            new { guildid = guildId, guildsuggestionid = guildSuggestionId });
+                    using IDbConnection cnn = new SQLiteConnection(LoadConnectionString());
+                    var message = await cnn.QueryFirstAsync<SuggestionModel>("select messageId, channelId, state, description from suggestions where guildId = @guildid and guildSuggestionId = @guildsuggestionid",
+                        new { guildid = guildId, guildsuggestionid = guildSuggestionId });
 
-                        return message;
-                    }
+                    return message;
                 }
 
                 catch (Exception ex)
@@ -195,6 +154,56 @@ namespace BotName.Database
         }
         #endregion Suggestions
 
+        #region Logging
+        public class Logging
+        {
+            public static async Task<bool> ExistsLog(ulong guildId)
+            {
+                try
+                {
+                    using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+                    {
+                        var exists = await cnn.QueryFirstOrDefaultAsync<int>("select 1 from logging where GuildId = @guildid", new { guildid = guildId });
+
+                        if (exists == 1)
+                        {
+                            return true;
+                        }
+
+                        else
+                        {
+                            await cnn.QueryAsync("insert into logging (GuildId) values (@guildid)", new { guildid = guildId });
+                            return false;
+                        }
+                    }
+                }
+
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
+
+                    return false;
+                }
+            }
+
+            public static async Task<ulong> GetLogChannel(ulong guildId, LogType type)
+            {
+                try
+                {
+                    using IDbConnection cnn = new SQLiteConnection(LoadConnectionString());
+                    var channelId = await cnn.QueryFirstOrDefaultAsync<ulong>($"select {type} from logging where GuildId = @guildid", new { guildid = guildId });
+                    return channelId;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
+                    return 0;
+                }
+            }
+        }
+        #endregion Logging
 
         private static string LoadConnectionString(string id = "Default")
         {

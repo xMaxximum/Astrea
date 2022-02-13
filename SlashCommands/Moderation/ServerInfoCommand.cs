@@ -8,7 +8,7 @@ namespace BotName.SlashCommands.Moderation
 {
     public class ServerInfoCommand : ApplicationCommandsModule
     {
-        [SlashCommand("serverinfo", "Gets the server's info")]
+        [SlashCommand("serverinfo", "Gets the server's info"), BannedCheck]
         public static async Task ServerInfo(InteractionContext context)
         {
             var guild = context.Guild;

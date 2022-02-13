@@ -1,4 +1,5 @@
-﻿using DisCatSharp.CommandsNext;
+﻿using DisCatSharp.ApplicationCommands;
+using DisCatSharp.CommandsNext;
 using DisCatSharp.CommandsNext.Attributes;
 using System.Threading.Tasks;
 
@@ -17,6 +18,19 @@ namespace BotName
             {
                 return true;
             }
+        }
+    }
+
+    public class BannedCheck : SlashCheckBaseAttribute
+    {
+        public override async Task<bool> ExecuteChecksAsync(InteractionContext ctx)
+        {
+            if (await Database.Database.Blacklists.BlacklistContains(ctx.Member.Id))
+            {
+                return false;
+            }
+
+            else return true;
         }
     }
 }

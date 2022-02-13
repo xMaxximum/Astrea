@@ -8,7 +8,7 @@ namespace BotName.SlashCommands.Moderation
 {
     public class PurgeCommand : ApplicationCommandsModule
     {
-        [SlashCommand("purge", "Purge messages")]
+        [SlashCommand("purge", "Purge messages"), BannedCheck]
         public static async Task Purge(InteractionContext context, [Option("amount", "Amount of messages to purge")] int amount, [Option("reason", "Reason for deleting the messages")] string reason = null, [Option("hidden", "Should the result message be hidden?")] bool hidden = false)
         {
             if (context.Client.GetGuildAsync(context.Guild.Id).Result.GetMemberAsync(context.Client.CurrentUser.Id).Result.Permissions.HasPermission(Permissions.ManageMessages))

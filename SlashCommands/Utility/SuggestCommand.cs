@@ -9,7 +9,7 @@ namespace BotName.SlashCommands.Utility
 {
     public class SuggestCommand : ApplicationCommandsModule
     {
-        [SlashCommandGroup("suggestion", "Commands used to deal with suggestions")]
+        [SlashCommandGroup("suggestion", "Commands used to deal with suggestions"), BannedCheck]
         public class SuggestCommandGroup : ApplicationCommandsModule
         {
             [SlashCommand("add", "Creates a new suggestion")]

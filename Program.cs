@@ -93,6 +93,8 @@ namespace BotName
                 return Task.CompletedTask;
             };
 
+            discord.MessageDeleted += Logging.MessageDeleteEvent.MessageDeleted;
+            discord.MessageUpdated += Logging.MessageUpdateEvent.MessageUpdated;
 
             discord.GuildDownloadCompleted += (client, e) => Client_GuildDownloadCompleted(client, e);
 

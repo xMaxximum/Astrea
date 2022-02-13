@@ -11,7 +11,7 @@ namespace BotName.SlashCommands.Moderation
 {
     public class KickCommand : ApplicationCommandsModule
     {
-        [SlashCommand("kick", "Kicks an user")]
+        [SlashCommand("kick", "Kicks an user"), BannedCheck]
         public static async Task Kick(InteractionContext context, [Option("user", "The user to kick")] DiscordUser user, [Option("reason", "Provide the reason for the kick")] string reason = null)
         {
             if (context.Client.GetGuildAsync(context.Guild.Id).Result.GetMemberAsync(context.Client.CurrentUser.Id).Result.Permissions.HasPermission(Permissions.KickMembers)) {

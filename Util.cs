@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Globalization;
 
 namespace BotName
@@ -57,6 +58,18 @@ namespace BotName
                 weeks++;
 
             return weeks;
+        }
+
+        public static string AddLint(string text) => "```ldif\n" + text + "```";
+
+        public static void Print(object obj)
+        {
+            foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(obj))
+            {
+                string name = descriptor.Name;
+                object value = descriptor.GetValue(obj);
+                Console.WriteLine("{0}= {1}", name, value);
+            }
         }
     }
 }

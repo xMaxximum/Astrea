@@ -13,7 +13,7 @@ namespace BotName.SlashCommands.Utility
 {
     public class AboutCommand : ApplicationCommandsModule
     {
-        [SlashCommand("about", "Returns info about the bot")]
+        [SlashCommand("about", "Returns info about the bot"), BannedCheck]
         public static async Task About(InteractionContext context)
         {
             await context.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
