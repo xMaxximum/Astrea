@@ -157,36 +157,6 @@ namespace BotName.Database
         #region Logging
         public class Logging
         {
-            public static async Task<bool> ExistsLog(ulong guildId)
-            {
-                try
-                {
-                    using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
-                    {
-                        var exists = await cnn.QueryFirstOrDefaultAsync<int>("select 1 from logging where GuildId = @guildid", new { guildid = guildId });
-
-                        if (exists == 1)
-                        {
-                            return true;
-                        }
-
-                        else
-                        {
-                            await cnn.QueryAsync("insert into logging (GuildId) values (@guildid)", new { guildid = guildId });
-                            return false;
-                        }
-                    }
-                }
-
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                    Console.WriteLine(ex.StackTrace);
-
-                    return false;
-                }
-            }
-
             public static async Task<ulong> GetLogChannel(ulong guildId, LogType type)
             {
                 try

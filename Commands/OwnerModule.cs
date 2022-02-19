@@ -16,6 +16,15 @@ namespace BotName.Commands
 {
     public class OwnerModule : BaseCommandModule
     {
+        [Command("test")]
+        public async Task TestCommand(CommandContext ctx)
+        {
+            var lol = await Database.Database.Logging.GetLogChannel(ctx.Guild.Id, Database.Models.LoggingModel.LogType.MessageCreate);
+
+            await ctx.RespondAsync(lol.ToString());
+        }
+
+
         [Command("eval"), Aliases(new string[] { "ev" }), Description("evaluates something"), RequireOwner]
         public async Task EvalCommand(CommandContext ctx, [RemainingText] string evalShit = null)
         {

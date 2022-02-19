@@ -29,13 +29,9 @@ namespace BotName.Database.Models
             GuildBanAdd,
             GuildBanRemove,
             //Guild Emojis
-            GuildEmojisCreate,
             GuildEmojisUpdate,
-            GuildEmojisDelete,
             //Guild Stickers
-            GuildStickersCreate,
             GuildStickersUpdate,
-            GuildStickersDelete,
             //Guild Members
             GuildMemberAdd,
             GuildMemberUpdate,

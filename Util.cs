@@ -1,6 +1,11 @@
-﻿using System;
+﻿using DisCatSharp.Entities;
+using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace BotName
 {
@@ -68,8 +73,74 @@ namespace BotName
             {
                 string name = descriptor.Name;
                 object value = descriptor.GetValue(obj);
-                Console.WriteLine("{0}= {1}", name, value);
+                Console.WriteLine("{0} = {1}", name, value);
             }
+        }
+
+        public static async Task<DiscordAuditLogEntry> TryGetAuditLogEntry(DiscordGuild guild, AuditLogActionType type)
+        {
+            try
+            {
+                var audits = await guild.GetAuditLogsAsync(1, actionType: type);
+
+                return (DiscordAuditLogEntry)(IReadOnlyList<DiscordAuditLogEntry>)audits.FirstOrDefault(e => DateTimeOffset.UtcNow - e.CreationTimestamp < TimeSpan.FromSeconds(30));
+            }
+
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+    }
+
+    public static class Extensions
+    {
+        public static List<Variance> CompareRoleDifference(this DiscordRole role, DiscordRole second)
+        {
+            return role.Compare(second);
+        }
+    }
+
+    public class Variance
+    {
+        public string PropertyName { get; set; }
+        public object ValA { get; set; }
+        public object ValB { get; set; }
+    }
+
+    public static class Comparision
+    {
+        public static List<Variance> Compare<T>(this T val1, T val2)
+        {
+            var variances = new List<Variance>();
+            var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            foreach (var property in properties)
+            {
+                var v = new Variance
+                {
+                    PropertyName = property.Name,
+                    ValA = property.GetValue(val1),
+                    ValB = property.GetValue(val2)
+                };
+                if (v.ValA == null && v.ValB == null)
+                {
+                    continue;
+                }
+                if (
+                    (v.ValA == null && v.ValB != null)
+                    ||
+                    (v.ValA != null && v.ValB == null)
+                )
+                {
+                    variances.Add(v);
+                    continue;
+                }
+                if (!v.ValA.Equals(v.ValB))
+                {
+                    variances.Add(v);
+                }
+            }
+            return variances;
         }
     }
 }

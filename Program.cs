@@ -72,6 +72,7 @@ namespace BotName
 
             var appCommands = discord.UseApplicationCommandsAsync();
 
+            #region Eventlistener Registration
             discord.GuildCreated += async (s, e) =>
             {
                 discord.Logger.Log(LogLevel.Information, "Joined guild '{guildName}' ID: {guildId}", e.Guild.Name, e.Guild.Id);
@@ -92,12 +93,28 @@ namespace BotName
                 discord.Logger.Log(LogLevel.Information, "Left guild '{guildName}' ({guildID})", e.Guild.Name, e.Guild.Id);
                 return Task.CompletedTask;
             };
-
+            
             discord.MessageDeleted += Logging.MessageDeleteEvent.MessageDeleted;
             discord.MessageUpdated += Logging.MessageUpdateEvent.MessageUpdated;
+            discord.MessagesBulkDeleted += Logging.MessageBulkDeleteEvent.MessageBulkDeleted;
+            discord.ChannelCreated += Logging.ChannelCreateEvent.ChannelCreated;
+            discord.ChannelDeleted += Logging.ChannelDeleteEvent.ChannelDeleted;
+            discord.ChannelUpdated += Logging.ChannelUpdateEvent.ChannelUpdated;
+            discord.ThreadCreated += Logging.ThreadCreateEvent.ThreadCreated;
+            discord.ThreadUpdated += Logging.ThreadUpdateEvent.ThreadUpdated;
+            discord.ThreadDeleted += Logging.ThreadDeleteEvent.ThreadDeleted;
+            discord.GuildBanAdded += Logging.GuildBanAddEvent.GuildBanAdded;
+            discord.GuildBanRemoved += Logging.GuildBanRemoveEvent.GuildBanRemoved;
+            discord.GuildEmojisUpdated += Logging.GuildEmojiUpdateEvent.GuildEmojiUpdated;
+            discord.GuildStickersUpdated += Logging.GuildStickerUpdateEvent.GuildStickerUpdated;
+            discord.GuildRoleCreated += Logging.GuildRoleCreate.RoleCreated;
+            discord.GuildRoleUpdated += Logging.GuildRoleUpdate.RoleUpdated;
+            discord.GuildRoleDeleted += Logging.GuildRoleDelete.RoleDeleted;
+            discord.InviteCreated += Logging.GuildInviteCreate.InviteCreated;
+            discord.InviteDeleted += Logging.GuildInviteDelete.InviteDeleted;
 
             discord.GuildDownloadCompleted += (client, e) => Client_GuildDownloadCompleted(client, e);
-
+            #endregion Eventlistener Registration
 
             await discord.StartAsync();
             await Task.Delay(-1);
