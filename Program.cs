@@ -77,6 +77,8 @@ namespace BotName
             {
                 discord.Logger.Log(LogLevel.Information, "Joined guild '{guildName}' ID: {guildId}", e.Guild.Name, e.Guild.Id);
 
+                await Database.Database.Logging.AddLogServer(e.Guild.Id);
+
                 var appCommandModule = typeof(ApplicationCommandsModule);
                 var slashCommands = Assembly.GetExecutingAssembly().GetTypes()
                     .Where(t => appCommandModule.IsAssignableFrom(t) && !t.IsNested).ToList();

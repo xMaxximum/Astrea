@@ -157,6 +157,20 @@ namespace BotName.Database
         #region Logging
         public class Logging
         {
+            public static async Task AddLogServer(ulong guildId)
+            {
+                try
+                {
+                    using IDbConnection cnn = new SQLiteConnection(LoadConnectionString());
+                    await cnn.QueryFirstOrDefaultAsync<ulong>($"insert into logging (GuildId) values ({guildId})");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
+                    return;
+                }
+            }
             public static async Task<ulong> GetLogChannel(ulong guildId, LogType type)
             {
                 try
