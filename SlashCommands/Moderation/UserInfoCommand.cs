@@ -22,9 +22,9 @@ namespace BotName.SlashCommands.Utility
                     ImageUrl = member.BannerUrl
                 };
                 bigboiembed.WithThumbnail(context.Member.AvatarUrl);
-                bigboiembed.AddField("General Information:", $"Tag: {context.Member.UsernameWithDiscriminator} \n ID: {context.Member.Id} \n Color: `{context.Member.Color}` \n Status: {context.Member.Presence.Status} \n Bot: {context.Member.IsBot.ToString().ToLower()}");
-                bigboiembed.AddField("Dates:", $"Joined server: <t:{context.Member.JoinedAt.ToUnixTimeSeconds()}:R> \n Creation: <t:{member.CreationTimestamp.ToUnixTimeSeconds()}:R>");
-                bigboiembed.AddField("Roles:", $"{string.Join(", ", roles)}");
+                bigboiembed.AddField(new DiscordEmbedField("General Information:", $"Tag: {context.Member.UsernameWithDiscriminator} \n ID: {context.Member.Id} \n Color: `{context.Member.Color}` \n Status: {context.Member.Presence.Status} \n Bot: {context.Member.IsBot.ToString().ToLower()}"));
+                bigboiembed.AddField(new DiscordEmbedField("Dates:", $"Joined server: <t:{context.Member.JoinedAt.ToUnixTimeSeconds()}:R> \n Creation: <t:{member.CreationTimestamp.ToUnixTimeSeconds()}:R>"));
+                bigboiembed.AddField(new DiscordEmbedField("Roles:", $"{string.Join(", ", roles)}"));
                 await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AsEphemeral(hidden).AddEmbed(bigboiembed.Build()));
             }
             
@@ -43,9 +43,9 @@ namespace BotName.SlashCommands.Utility
                     ImageUrl = member.BannerUrl
                 };
                 bigboiembed.WithThumbnail(member.AvatarUrl);
-                bigboiembed.AddField("General Information:", $"Tag: {member.UsernameWithDiscriminator} \n ID: {member.Id} \n Color: `{member.Color}` \n Status: {status} \n Bot: {member.IsBot.ToString().ToLower()}");
-                bigboiembed.AddField("Dates:", $"Joined server: <t:{member.JoinedAt.ToUnixTimeSeconds()}:R> \n Creation: <t:{member.CreationTimestamp.ToUnixTimeSeconds()}:R>");
-                bigboiembed.AddField("Roles:", $"{string.Join(", ", roles)}");
+                bigboiembed.AddField(new DiscordEmbedField("General Information:", $"Tag: {member.UsernameWithDiscriminator} \n ID: {member.Id} \n Color: `{member.Color}` \n Status: {status} \n Bot: {member.IsBot.ToString().ToLower()}"));
+                bigboiembed.AddField(new DiscordEmbedField("Dates:", $"Joined server: <t:{member.JoinedAt.ToUnixTimeSeconds()}:R> \n Creation: <t:{member.CreationTimestamp.ToUnixTimeSeconds()}:R>"));
+                bigboiembed.AddField(new DiscordEmbedField("Roles:", $"{string.Join(", ", roles)}"));
                 await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AsEphemeral(hidden).AddEmbed(bigboiembed.Build()));
             }
 
@@ -59,8 +59,8 @@ namespace BotName.SlashCommands.Utility
                     ImageUrl = lol.BannerUrl
                 }.WithFooter("User is not in the server!");
                 bigboiembed.WithThumbnail(lol.AvatarUrl);
-                bigboiembed.AddField("General Information:", $"Tag: {lol.UsernameWithDiscriminator} \n ID: {lol.Id} \n Bot: {lol.IsBot.ToString().ToLower()}");
-                bigboiembed.AddField("Dates:", $"Creation: <t:{lol.CreationTimestamp.ToUnixTimeSeconds()}:R>");
+                bigboiembed.AddField(new DiscordEmbedField("General Information:", $"Tag: {lol.UsernameWithDiscriminator} \n ID: {lol.Id} \n Bot: {lol.IsBot.ToString().ToLower()}"));
+                bigboiembed.AddField(new DiscordEmbedField("Dates:", $"Creation: <t:{lol.CreationTimestamp.ToUnixTimeSeconds()}:R>"));
                 await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AsEphemeral(hidden).AddEmbed(bigboiembed.Build()));
             }
         }

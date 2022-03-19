@@ -6,11 +6,26 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Reflection;
 using System.Threading.Tasks;
+using DisCatSharp;
 
 namespace BotName
 {
     public class Util
     {
+        public static string FormatBytes(long bytes)
+        {
+            string[] Suffix = { "B", "KB", "MB", "GB", "TB" };
+            int i;
+            double dblSByte = bytes;
+            for (i = 0; i < Suffix.Length && bytes >= 1024; i++, bytes /= 1024)
+            {
+                dblSByte = bytes / 1024.0;
+            }
+
+            return string.Format("{0:0.##} {1}", dblSByte, Suffix[i]);
+        }
+
+
         public static DateTime ConvertStringToTime(string time, DateTime now)
         {
             DateTime until = now;
@@ -95,10 +110,23 @@ namespace BotName
 
     public static class Extensions
     {
+        public static async void LogException(this Exception ex, DiscordClient client)
+        {
+            await client.GetGuildAsync(869686963828035644).Result.GetChannel(954735094231339099).GetWebhooksAsync().Result[0].ExecuteAsync(new DiscordWebhookBuilder()
+            {
+                Content = $"<@724702329693274114>, Error happened! {DateTime.Now}",
+            }.AddEmbed(new DiscordEmbedBuilder()
+            {
+                Title = ex.Message,
+                Description = ex.StackTrace
+            }));
+        }
+
         public static List<Variance> CompareRoleDifference(this DiscordRole role, DiscordRole second)
         {
             return role.Compare(second);
         }
+
     }
 
     public class Variance

@@ -2,42 +2,52 @@
 using Dapper;
 using System;
 using System.Configuration;
-using System.Data;
-using System.Data.SQLite;
+using Npgsql;
 using System.Linq;
 using System.Threading.Tasks;
 using static BotName.Database.Models.LoggingModel;
+using System.Numerics;
 
 namespace BotName.Database
 {
     public class Database
-    {
+    { 
         #region Blacklist
-
         public class Blacklists
         {
             public static async Task<bool> BlacklistContains(ulong userId)
             {
-                using IDbConnection cnn = new SQLiteConnection(LoadConnectionString());
-                var output = await cnn.QueryAsync<BlacklistModel>($"select id from blacklist where id = {userId}");
-                if (output.ToList().Any())
+                try
                 {
-                    return true;
+                    using NpgsqlConnection cnn = new(LoadConnectionString());
+                    cnn.Open();
+                    var output = await cnn.QueryAsync<BlacklistModel>($"select id from blacklist where id = {userId}");
+                    if (output.ToList().Any())
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);   
+
                     return false;
                 }
             }
 
             public static async Task AddBlacklistAsync(BlacklistModel user)
             {
-                using IDbConnection cnn = new SQLiteConnection(LoadConnectionString());
+                using NpgsqlConnection cnn = new(LoadConnectionString());
+                cnn.Open();
                 await cnn.QueryAsync("insert into blacklist (Id, Reason) values (@Id, @Reason)", user);
             }
         }
         #endregion Blacklist
-
 
         #region Suggestions
         public class Suggestions
@@ -46,7 +56,8 @@ namespace BotName.Database
             {
                 try
                 {
-                    using IDbConnection cnn = new SQLiteConnection(LoadConnectionString());
+                    using NpgsqlConnection cnn = new(LoadConnectionString());
+                    cnn.Open();
                     await cnn.QueryAsync<SuggestionModel>("insert into suggestions (guildId, guildSuggestionId, channelId, messageId, userId, description, state) values (@guildId, @guildSuggestionId, @channelId, @messageId, @userId, @description, @state)", suggestion);
                 }
 
@@ -61,7 +72,8 @@ namespace BotName.Database
             {
                 try
                 {
-                    using IDbConnection cnn = new SQLiteConnection(LoadConnectionString());
+                    using NpgsqlConnection cnn = new(LoadConnectionString());
+                    cnn.Open();
                     await cnn.QueryAsync<SuggestionModel>($"update suggestions set description = @Description where guildId = {guildId} and userId = {userId} and guildSuggestionId = {id}", new
                     {
                         Description = description
@@ -79,7 +91,8 @@ namespace BotName.Database
             {
                 try
                 {
-                    using IDbConnection cnn = new SQLiteConnection(LoadConnectionString());
+                    using NpgsqlConnection cnn = new(LoadConnectionString());
+                    cnn.Open();
                     await cnn.QueryAsync($"update suggestions set state = @state where guildId = {guildId} and guildSuggestionId = {suggestionId}", new { state });
                 }
                 catch (Exception ex)
@@ -93,7 +106,8 @@ namespace BotName.Database
             {
                 try
                 {
-                    using IDbConnection cnn = new SQLiteConnection(LoadConnectionString());
+                    using NpgsqlConnection cnn = new(LoadConnectionString());
+                    cnn.Open();
                     var suggestion = await cnn.QueryFirstOrDefaultAsync<string>("select 1 from suggestions where guildSuggestionId = @guildsuggestionid and userId = @userid", new
                     {
                         guildsuggestionid = guildSuggestionId,
@@ -120,7 +134,8 @@ namespace BotName.Database
             {
                 try
                 {
-                    using IDbConnection cnn = new SQLiteConnection(LoadConnectionString());
+                    using NpgsqlConnection cnn = new(LoadConnectionString());
+                    cnn.Open();
                     int guildSuggestionCount = await cnn.QueryFirstOrDefaultAsync<int>($"select count(guildSuggestionId) from suggestions where guildId = {guildId}");
 
                     return guildSuggestionCount + 1;
@@ -137,7 +152,8 @@ namespace BotName.Database
             {
                 try
                 {
-                    using IDbConnection cnn = new SQLiteConnection(LoadConnectionString());
+                    using NpgsqlConnection cnn = new(LoadConnectionString());
+                    cnn.Open();
                     var message = await cnn.QueryFirstAsync<SuggestionModel>("select messageId, channelId, state, description from suggestions where guildId = @guildid and guildSuggestionId = @guildsuggestionid",
                         new { guildid = guildId, guildsuggestionid = guildSuggestionId });
 
@@ -161,8 +177,9 @@ namespace BotName.Database
             {
                 try
                 {
-                    using IDbConnection cnn = new SQLiteConnection(LoadConnectionString());
-                    await cnn.QueryFirstOrDefaultAsync<ulong>($"insert into logging (GuildId) values ({guildId})");
+                    using NpgsqlConnection cnn = new(LoadConnectionString());
+                    cnn.Open();
+                    await cnn.QueryFirstOrDefaultAsync<BigInteger>($"insert into logging (GuildId) values ({guildId})");
                 }
                 catch (Exception ex)
                 {
@@ -171,13 +188,14 @@ namespace BotName.Database
                     return;
                 }
             }
-            public static async Task<ulong> GetLogChannel(ulong guildId, LogType type)
+            public static async Task<ulong> GetLogChannel(BigInteger guildId, LogType type)
             {
                 try
                 {
-                    using IDbConnection cnn = new SQLiteConnection(LoadConnectionString());
-                    var channelId = await cnn.QueryFirstOrDefaultAsync<ulong>($"select {type} from logging where GuildId = @guildid", new { guildid = guildId });
-                    return channelId;
+                    using NpgsqlConnection cnn = new(LoadConnectionString());
+                    cnn.Open();
+                    var channelId = await cnn.QueryFirstOrDefaultAsync<BigInteger>($"select {type} from logging where GuildId = @guildid", new { guildid = guildId });
+                    return (ulong)channelId;
                 }
                 catch (Exception ex)
                 {
@@ -189,7 +207,7 @@ namespace BotName.Database
         }
         #endregion Logging
 
-        private static string LoadConnectionString(string id = "Default")
+        private static string LoadConnectionString(string id = "Database")
         {
             return ConfigurationManager.ConnectionStrings[id].ConnectionString;
         }

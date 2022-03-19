@@ -16,15 +16,6 @@ namespace BotName.Commands
 {
     public class OwnerModule : BaseCommandModule
     {
-        [Command("test")]
-        public async Task TestCommand(CommandContext ctx)
-        {
-            var lol = await Database.Database.Logging.GetLogChannel(ctx.Guild.Id, Database.Models.LoggingModel.LogType.MessageCreate);
-
-            await ctx.RespondAsync(lol.ToString());
-        }
-
-
         [Command("eval"), Aliases(new string[] { "ev" }), Description("evaluates something"), RequireOwner]
         public async Task EvalCommand(CommandContext ctx, [RemainingText] string evalShit = null)
         {
@@ -65,11 +56,11 @@ namespace BotName.Commands
                     foreach (var xd in csc.Take(3))
                     {
                         var ls = xd.Location.GetLineSpan();
-                        embed.AddField(string.Concat("Error at ", ls.StartLinePosition.Line.ToString("#,##0"), ", ", ls.StartLinePosition.Character.ToString("#,##0")), Formatter.InlineCode(xd.GetMessage()), false);
+                        embed.AddField(new DiscordEmbedField(string.Concat("Error at ", ls.StartLinePosition.Line.ToString("#,##0"), ", ", ls.StartLinePosition.Character.ToString("#,##0")), Formatter.InlineCode(xd.GetMessage()), false));
                     }
                     if (csc.Length > 3)
                     {
-                        embed.AddField("Some errors ommited", string.Concat((csc.Length - 3).ToString("#,##0"), " more errors not displayed"), false);
+                        embed.AddField(new DiscordEmbedField("Some errors ommited", string.Concat((csc.Length - 3).ToString("#,##0"), " more errors not displayed"), false));
                     }
                     await msg.ModifyAsync(embed: embed.Build());
                     return;
@@ -108,12 +99,12 @@ namespace BotName.Commands
                     Color = new DiscordColor(0xD091B2),
                 };
 
-                embed.AddField("Result", css.ReturnValue != null ? css.ReturnValue.ToString() : "No value returned", false)
-                    .AddField("Compilation time", string.Concat(sw1.ElapsedMilliseconds.ToString("#,##0"), "ms"), true)
-                    .AddField("Execution time", string.Concat(sw2.ElapsedMilliseconds.ToString("#,##0"), "ms"), true);
+                embed.AddField(new DiscordEmbedField("Result", css.ReturnValue != null ? css.ReturnValue.ToString() : "No value returned", false))
+                    .AddField(new DiscordEmbedField("Compilation time", string.Concat(sw1.ElapsedMilliseconds.ToString("#,##0"), "ms"), true))
+                    .AddField(new DiscordEmbedField("Execution time", string.Concat(sw2.ElapsedMilliseconds.ToString("#,##0"), "ms"), true));
 
                 if (css.ReturnValue != null)
-                    embed.AddField("Return type", css.ReturnValue.GetType().ToString(), true);
+                    embed.AddField(new DiscordEmbedField("Return type", css.ReturnValue.GetType().ToString(), true));
 
                 await msg.ModifyAsync(embed: embed.Build());
 

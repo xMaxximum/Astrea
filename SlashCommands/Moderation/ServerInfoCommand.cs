@@ -25,12 +25,12 @@ namespace BotName.SlashCommands.Moderation
                 Color = new DiscordColor(0x2F3136)
             }.WithThumbnail(guild.IconUrl);
 
-            embed.AddField("General Information:", $"ID: {guild.Id}\nOwner: {guild.Owner.Mention} `{guild.Owner.UsernameWithDiscriminator}`\nCreation: <t:{guild.CreationTimestamp.ToUnixTimeSeconds()}:R>\nChannels: {guild.Channels.Where(x => x.Value.IsCategory == false).ToList().Count}\nMembers: {guild.MemberCount}\nRoles: {guild.Roles.Count}\nBoosts: {guild.PremiumSubscriptionCount} (Level: {guild.PremiumTier})");
-            embed.AddField("Member Information:", $"Users: {guild.Members.Where(x => x.Value.IsBot == false).ToList().Count}\nBots: {guild.Members.Where(x => x.Value.IsBot == true).ToList().Count}\nBans: {bans.Count}");
-            embed.AddField("Channel Information:", $"Text Channels: {text.Count} {voice} {category} {stage}");
-            embed.AddField("In-depth Information:", $"Emotes: {guild.Emojis.Count}\nStickers: {guild.Stickers.Count}\nMFA: {guild.MfaLevel}\nNSFW Level: {guild.NsfwLevel}\nVerification Level: {guild.VerificationLevel}\nFeatures: {string.Join("", guild.RawFeatures.Select(x => $"`{x.ToLower()}` ").ToList())}");
+            embed.AddField(new DiscordEmbedField("General Information:", $"ID: {guild.Id}\nOwner: {guild.Owner.Mention} `{guild.Owner.UsernameWithDiscriminator}`\nCreation: <t:{guild.CreationTimestamp.ToUnixTimeSeconds()}:R>\nChannels: {guild.Channels.Where(x => x.Value.IsCategory == false).ToList().Count}\nMembers: {guild.MemberCount}\nRoles: {guild.Roles.Count}\nBoosts: {guild.PremiumSubscriptionCount} (Level: {guild.PremiumTier})"));
+            embed.AddField(new DiscordEmbedField("Member Information:", $"Users: {guild.Members.Where(x => x.Value.IsBot == false).ToList().Count}\nBots: {guild.Members.Where(x => x.Value.IsBot == true).ToList().Count}\nBans: {bans.Count}"));
+            embed.AddField(new DiscordEmbedField("Channel Information:", $"Text Channels: {text.Count} {voice} {category} {stage}"));
+            embed.AddField(new DiscordEmbedField("In-depth Information:", $"Emotes: {guild.Emojis.Count}\nStickers: {guild.Stickers.Count}\nMFA: {guild.MfaLevel}\nNSFW Level: {guild.NsfwLevel}\nVerification Level: {guild.VerificationLevel}\nFeatures: {string.Join("", guild.RawFeatures.Select(x => $"`{x.ToLower()}` ").ToList())}"));
 
-            
+
             await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
         }
     }

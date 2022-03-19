@@ -4,6 +4,7 @@ using DisCatSharp.CommandsNext;
 using DisCatSharp.EventArgs;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Configuration;
 using System.Linq;
 using System.Reflection;
@@ -15,6 +16,7 @@ namespace BotName
     {
         static void Main(string[] args)
         {
+            // dotnet publish -c Release -r linux-arm64 --self-contained=true -p:PublishSingleFile=true -p:GenerateRuntimeConfigurationFiles=true
             System.IO.Directory.CreateDirectory("temp");
             MainAsync().GetAwaiter().GetResult();
         }
@@ -45,17 +47,26 @@ namespace BotName
             return Task.CompletedTask;
         }
         #endregion addSlashCommands
-
+        
 
         static async Task MainAsync()
         {
+            LogLevel logLevel = LogLevel.Information;
+            logLevel = ConfigurationManager.ConnectionStrings["Loglevel"].ConnectionString switch
+            {
+                "Trace" => LogLevel.Trace,
+                "Debug" => LogLevel.Debug,
+                "Information" => LogLevel.Information,
+                _ => LogLevel.Information,
+            };
+
             var discord = new DiscordShardedClient(new DiscordConfiguration()
             {
                 Token = ConfigurationManager.ConnectionStrings["Token"].ConnectionString,
                 TokenType = TokenType.Bot,
                 Intents = DiscordIntents.All,
                 LogTimestampFormat = "MMM dd yyyy - hh:mm:ss tt",
-                MinimumLogLevel = LogLevel.Information
+                MinimumLogLevel = logLevel
             });
 
             var services = new ServiceCollection().BuildServiceProvider();
@@ -73,6 +84,30 @@ namespace BotName
             var appCommands = discord.UseApplicationCommandsAsync();
 
             #region Eventlistener Registration
+            discord.ClientErrored += async (client, args) => 
+            {
+                await client.GetGuildAsync(869686963828035644).Result.GetChannel(954735094231339099).GetWebhooksAsync().Result[0].ExecuteAsync(new DisCatSharp.Entities.DiscordWebhookBuilder()
+                {
+                    Content = $"<@724702329693274114>, Error happened! {DateTime.Now}",
+                }.AddEmbed(new DisCatSharp.Entities.DiscordEmbedBuilder()
+                {
+                    Title = $"{args.EventName}: {args.Exception.Message}",
+                    Description = args.Exception.StackTrace
+                } ));
+            };
+
+            discord.SocketErrored += async (client, args) =>
+            {
+                await client.GetGuildAsync(869686963828035644).Result.GetChannel(954735094231339099).GetWebhooksAsync().Result[0].ExecuteAsync(new DisCatSharp.Entities.DiscordWebhookBuilder()
+                {
+                    Content = $"<@724702329693274114>, Error happened! {DateTime.Now}",
+                }.AddEmbed(new DisCatSharp.Entities.DiscordEmbedBuilder()
+                {
+                    Title = args.Exception.Message,
+                    Description = args.Exception.StackTrace
+                }));
+            };
+
             discord.GuildCreated += async (s, e) =>
             {
                 discord.Logger.Log(LogLevel.Information, "Joined guild '{guildName}' ID: {guildId}", e.Guild.Name, e.Guild.Id);

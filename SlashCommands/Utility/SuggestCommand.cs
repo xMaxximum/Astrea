@@ -52,9 +52,9 @@ namespace BotName.SlashCommands.Utility
 
                         var dbRequest = await Database.Database.Suggestions.GetSuggestionMsgOfGuildAsync(context.Guild.Id, suggestionId);
 
-                        var channel = context.Guild.GetChannel(dbRequest.ChannelId);
+                        var channel = context.Guild.GetChannel((ulong)dbRequest.ChannelId);
 
-                        var message = await channel.GetMessageAsync(dbRequest.MessageId);
+                        var message = await channel.GetMessageAsync((ulong)dbRequest.MessageId);
 
                         await message.ModifyAsync(new DiscordMessageBuilder().AddEmbed(new DiscordEmbedBuilder()
                         {
@@ -99,9 +99,9 @@ namespace BotName.SlashCommands.Utility
 
                         var dbRequest = await Database.Database.Suggestions.GetSuggestionMsgOfGuildAsync(context.Guild.Id, suggestionId);
 
-                        var channel = context.Guild.GetChannel(dbRequest.ChannelId);
+                        var channel = context.Guild.GetChannel((ulong)dbRequest.ChannelId);
 
-                        var message = await channel.GetMessageAsync(dbRequest.MessageId);
+                        var message = await channel.GetMessageAsync((ulong)dbRequest.MessageId);
 
                         await message.ModifyAsync(new DiscordMessageBuilder().AddEmbed(new DiscordEmbedBuilder()
                         {
@@ -145,9 +145,9 @@ namespace BotName.SlashCommands.Utility
 
                         var dbRequest = await Database.Database.Suggestions.GetSuggestionMsgOfGuildAsync(context.Guild.Id, suggestionId);
 
-                        var channel = context.Guild.GetChannel(dbRequest.ChannelId);
+                        var channel = context.Guild.GetChannel((ulong)dbRequest.ChannelId);
 
-                        var message = await channel.GetMessageAsync(dbRequest.MessageId);
+                        var message = await channel.GetMessageAsync((ulong)dbRequest.MessageId);
 
                         await message.ModifyAsync(new DiscordMessageBuilder().AddEmbed(new DiscordEmbedBuilder()
                         {

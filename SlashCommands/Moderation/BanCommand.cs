@@ -1,7 +1,6 @@
 ﻿using DisCatSharp;
 using DisCatSharp.ApplicationCommands;
 using DisCatSharp.Entities;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -42,7 +41,7 @@ namespace BotName.SlashCommands.Moderation
                             });
                         }
 
-                        else if (!(context.Member.Hierarchy > member.Hierarchy)) 
+                        else if (!(context.Member.Hierarchy > member.Hierarchy))
                         {
                             await context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()
                             {
