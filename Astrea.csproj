@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -11,7 +11,7 @@
     <PackageReference Include="DisCatSharp.CommandsNext" Version="10.0.0-nightly-00295" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.2.0-1.final" />
     <PackageReference Include="Npgsql" Version="8.0.3" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.115.5" />
     <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="7.0.0-preview.2.22152.2" />
   </ItemGroup>
